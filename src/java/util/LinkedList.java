@@ -618,6 +618,7 @@ public class LinkedList<E>
     }
 
     // Search Operations
+    //查询操作
 
     /**
      * Returns the index of the first occurrence of the specified element
@@ -630,6 +631,7 @@ public class LinkedList<E>
      * @return the index of the first occurrence of the specified element in
      *         this list, or -1 if this list does not contain the element
      */
+     //返回指定元素在列表中第一次出现的索引，不存在返回-1
     public int indexOf(Object o) {
         int index = 0;
         if (o == null) {
@@ -659,6 +661,8 @@ public class LinkedList<E>
      * @return the index of the last occurrence of the specified element in
      *         this list, or -1 if this list does not contain the element
      */
+     //返回指定元素在列表中最后一次出现的索引，不存在返回-1
+     //逆向检索
     public int lastIndexOf(Object o) {
         int index = size;
         if (o == null) {
@@ -678,6 +682,7 @@ public class LinkedList<E>
     }
 
     // Queue operations.
+    //队列操作
 
     /**
      * Retrieves, but does not remove, the head (first element) of this list.
@@ -685,6 +690,7 @@ public class LinkedList<E>
      * @return the head of this list, or {@code null} if this list is empty
      * @since 1.5
      */
+     //获取列表首节点的元素，若为空，返回null
     public E peek() {
         final Node<E> f = first;
         return (f == null) ? null : f.item;
@@ -697,6 +703,7 @@ public class LinkedList<E>
      * @throws NoSuchElementException if this list is empty
      * @since 1.5
      */
+     //获取列表首节点的元素，若为空，抛异常
     public E element() {
         return getFirst();
     }
@@ -707,6 +714,7 @@ public class LinkedList<E>
      * @return the head of this list, or {@code null} if this list is empty
      * @since 1.5
      */
+     //获取并删除首节点的元素，若为空，返回null
     public E poll() {
         final Node<E> f = first;
         return (f == null) ? null : unlinkFirst(f);
@@ -719,6 +727,7 @@ public class LinkedList<E>
      * @throws NoSuchElementException if this list is empty
      * @since 1.5
      */
+     //获取首节点的元素，若为空，抛异常
     public E remove() {
         return removeFirst();
     }
@@ -730,6 +739,7 @@ public class LinkedList<E>
      * @return {@code true} (as specified by {@link Queue#offer})
      * @since 1.5
      */
+     //把节点e添加到列表末尾
     public boolean offer(E e) {
         return add(e);
     }
@@ -742,6 +752,7 @@ public class LinkedList<E>
      * @return {@code true} (as specified by {@link Deque#offerFirst})
      * @since 1.6
      */
+     
     public boolean offerFirst(E e) {
         addFirst(e);
         return true;
@@ -754,6 +765,7 @@ public class LinkedList<E>
      * @return {@code true} (as specified by {@link Deque#offerLast})
      * @since 1.6
      */
+     //在列表尾部插入节点e
     public boolean offerLast(E e) {
         addLast(e);
         return true;
@@ -767,6 +779,7 @@ public class LinkedList<E>
      *         if this list is empty
      * @since 1.6
      */
+     //获取首节点元素
     public E peekFirst() {
         final Node<E> f = first;
         return (f == null) ? null : f.item;
@@ -780,6 +793,7 @@ public class LinkedList<E>
      *         if this list is empty
      * @since 1.6
      */
+     //获取尾节点元素
     public E peekLast() {
         final Node<E> l = last;
         return (l == null) ? null : l.item;
@@ -793,6 +807,7 @@ public class LinkedList<E>
      *     this list is empty
      * @since 1.6
      */
+     //获取并删除首节点元素
     public E pollFirst() {
         final Node<E> f = first;
         return (f == null) ? null : unlinkFirst(f);
@@ -806,6 +821,7 @@ public class LinkedList<E>
      *     this list is empty
      * @since 1.6
      */
+     //获取并删除尾节点元素
     public E pollLast() {
         final Node<E> l = last;
         return (l == null) ? null : unlinkLast(l);
@@ -820,6 +836,7 @@ public class LinkedList<E>
      * @param e the element to push
      * @since 1.6
      */
+     //入栈
     public void push(E e) {
         addFirst(e);
     }
@@ -835,6 +852,7 @@ public class LinkedList<E>
      * @throws NoSuchElementException if this list is empty
      * @since 1.6
      */
+     //出栈
     public E pop() {
         return removeFirst();
     }
@@ -848,6 +866,7 @@ public class LinkedList<E>
      * @return {@code true} if the list contained the specified element
      * @since 1.6
      */
+     //删除列表中第一次出现o的节点
     public boolean removeFirstOccurrence(Object o) {
         return remove(o);
     }
@@ -861,6 +880,8 @@ public class LinkedList<E>
      * @return {@code true} if the list contained the specified element
      * @since 1.6
      */
+     //删除最后一次出现o的节点
+     //反向检索第一个
     public boolean removeLastOccurrence(Object o) {
         if (o == null) {
             for (Node<E> x = last; x != null; x = x.prev) {
