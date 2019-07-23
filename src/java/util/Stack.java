@@ -50,6 +50,7 @@ class Stack<E> extends Vector<E> {
     /**
      * Creates an empty Stack.
      */
+    //构造函数
     public Stack() {
     }
 
@@ -63,7 +64,9 @@ class Stack<E> extends Vector<E> {
      * @return  the {@code item} argument.
      * @see     java.util.Vector#addElement
      */
+    //将元素插入栈顶
     public E push(E item) {
+        //addElement实现在Vector.java中
         addElement(item);
 
         return item;
@@ -77,11 +80,13 @@ class Stack<E> extends Vector<E> {
      *          of the {@code Vector} object).
      * @throws  EmptyStackException  if this stack is empty.
      */
+    //返回栈顶元素，并将其从栈中删除
     public synchronized E pop() {
         E       obj;
         int     len = size();
 
         obj = peek();
+        //删除栈顶元素，实现在Vector.java中
         removeElementAt(len - 1);
 
         return obj;
@@ -95,6 +100,7 @@ class Stack<E> extends Vector<E> {
      *          of the {@code Vector} object).
      * @throws  EmptyStackException  if this stack is empty.
      */
+    //返回栈顶元素，但是不删除，如果栈为空，抛出异常
     public synchronized E peek() {
         int     len = size();
 
@@ -109,6 +115,7 @@ class Stack<E> extends Vector<E> {
      * @return  {@code true} if and only if this stack contains
      *          no items; {@code false} otherwise.
      */
+    //栈是否为空
     public boolean empty() {
         return size() == 0;
     }
@@ -127,6 +134,7 @@ class Stack<E> extends Vector<E> {
      *          the object is located; the return value {@code -1}
      *          indicates that the object is not on the stack.
      */
+    //查找元素，从栈底开始往栈顶方向查找
     public synchronized int search(Object o) {
         int i = lastIndexOf(o);
 
