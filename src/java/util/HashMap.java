@@ -452,7 +452,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @throws IllegalArgumentException if the initial capacity is negative
      *         or the load factor is nonpositive
      */
-     //构造器
+     //构造器，指定容量和负载因子
     public HashMap(int initialCapacity, float loadFactor) {
         if (initialCapacity < 0)
             throw new IllegalArgumentException("Illegal initial capacity: " +
@@ -473,7 +473,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param  initialCapacity the initial capacity.
      * @throws IllegalArgumentException if the initial capacity is negative.
      */
-     //构造器
+     //构造器，指定容量
     public HashMap(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
@@ -482,7 +482,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * Constructs an empty {@code HashMap} with the default initial capacity
      * (16) and the default load factor (0.75).
      */
-     //构造器
+     //构造器，使用默认容量和负载因子
     public HashMap() {
         this.loadFactor = DEFAULT_LOAD_FACTOR; // all other fields defaulted
     }
@@ -496,6 +496,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param   m the map whose mappings are to be placed in this map
      * @throws  NullPointerException if the specified map is null
      */
+     //根据指定的map初始化，使用默认负载因子
     public HashMap(Map<? extends K, ? extends V> m) {
         this.loadFactor = DEFAULT_LOAD_FACTOR;
         putMapEntries(m, false);
@@ -508,6 +509,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param evict false when initially constructing this map, else
      * true (relayed to method afterNodeInsertion).
      */
+     //根据指定map初始化的实现
     final void putMapEntries(Map<? extends K, ? extends V> m, boolean evict) {
         int s = m.size();
         if (s > 0) {
@@ -533,6 +535,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @return the number of key-value mappings in this map
      */
+     //返回键值对的数量
     public int size() {
         return size;
     }
@@ -542,6 +545,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @return {@code true} if this map contains no key-value mappings
      */
+     //判断map是否为空
     public boolean isEmpty() {
         return size == 0;
     }
@@ -563,6 +567,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @see #put(Object, Object)
      */
+     
     public V get(Object key) {
         Node<K,V> e;
         return (e = getNode(hash(key), key)) == null ? null : e.value;
