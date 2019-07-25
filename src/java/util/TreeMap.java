@@ -118,18 +118,21 @@ public class TreeMap<K,V>
      *
      * @serial
      */
+     //比较器
     private final Comparator<? super K> comparator;
-
+    //红黑树根节点
     private transient Entry<K,V> root;
 
     /**
      * The number of entries in the tree
      */
+     //红黑树节点数
     private transient int size = 0;
 
     /**
      * The number of structural modifications to the tree.
      */
+     //修改次数
     private transient int modCount = 0;
 
     /**
@@ -144,6 +147,7 @@ public class TreeMap<K,V>
      * {@code put(Object key, Object value)} call will throw a
      * {@code ClassCastException}.
      */
+    //默认构造器
     public TreeMap() {
         comparator = null;
     }
@@ -162,6 +166,7 @@ public class TreeMap<K,V>
      *        If {@code null}, the {@linkplain Comparable natural
      *        ordering} of the keys will be used.
      */
+     //指定比较器的构造器
     public TreeMap(Comparator<? super K> comparator) {
         this.comparator = comparator;
     }
@@ -180,6 +185,7 @@ public class TreeMap<K,V>
      *         or are not mutually comparable
      * @throws NullPointerException if the specified map is null
      */
+     //指定一定元素的构造器
     public TreeMap(Map<? extends K, ? extends V> m) {
         comparator = null;
         putAll(m);
@@ -194,6 +200,7 @@ public class TreeMap<K,V>
      *         and whose comparator is to be used to sort this map
      * @throws NullPointerException if the specified map is null
      */
+     //指定了比较器和元素的构造器
     public TreeMap(SortedMap<K, ? extends V> m) {
         comparator = m.comparator();
         try {
@@ -210,6 +217,7 @@ public class TreeMap<K,V>
      *
      * @return the number of key-value mappings in this map
      */
+     //返回集合大小
     public int size() {
         return size;
     }
@@ -227,6 +235,7 @@ public class TreeMap<K,V>
      *         and this map uses natural ordering, or its comparator
      *         does not permit null keys
      */
+     //是否包含key
     public boolean containsKey(Object key) {
         return getEntry(key) != null;
     }
@@ -244,6 +253,7 @@ public class TreeMap<K,V>
      *         {@code false} otherwise
      * @since 1.2
      */
+     //是否包含值
     public boolean containsValue(Object value) {
         for (Entry<K,V> e = getFirstEntry(); e != null; e = successor(e))
             if (valEquals(value, e.value))
@@ -273,11 +283,12 @@ public class TreeMap<K,V>
      *         and this map uses natural ordering, or its comparator
      *         does not permit null keys
      */
+     //根据key返回value
     public V get(Object key) {
         Entry<K,V> p = getEntry(key);
         return (p==null ? null : p.value);
     }
-
+    //返回比较器
     public Comparator<? super K> comparator() {
         return comparator;
     }
@@ -285,6 +296,7 @@ public class TreeMap<K,V>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+     //获取第一个key
     public K firstKey() {
         return key(getFirstEntry());
     }
@@ -292,6 +304,7 @@ public class TreeMap<K,V>
     /**
      * @throws NoSuchElementException {@inheritDoc}
      */
+     //获取最后一个key
     public K lastKey() {
         return key(getLastEntry());
     }
@@ -308,6 +321,7 @@ public class TreeMap<K,V>
      *         the specified map contains a null key and this map does not
      *         permit null keys
      */
+     //把指定map中的元素全部拷贝到现在的map中
     public void putAll(Map<? extends K, ? extends V> map) {
         int mapSize = map.size();
         if (size==0 && mapSize!=0 && map instanceof SortedMap) {
@@ -337,6 +351,7 @@ public class TreeMap<K,V>
      *         and this map uses natural ordering, or its comparator
      *         does not permit null keys
      */
+     //根据key返回Entry
     final Entry<K,V> getEntry(Object key) {
         // Offload comparator-based version for sake of performance
         if (comparator != null)
@@ -364,6 +379,7 @@ public class TreeMap<K,V>
      * that are less dependent on comparator performance, but is
      * worthwhile here.)
      */
+     //获取key的节点（使用比较器）
     final Entry<K,V> getEntryUsingComparator(Object key) {
         @SuppressWarnings("unchecked")
             K k = (K) key;
@@ -389,6 +405,7 @@ public class TreeMap<K,V>
      * key; if no such entry exists (i.e., the greatest key in the Tree is less
      * than the specified key), returns {@code null}.
      */
+     //获取不小于key的最小节点
     final Entry<K,V> getCeilingEntry(K key) {
         Entry<K,V> p = root;
         while (p != null) {
@@ -421,6 +438,7 @@ public class TreeMap<K,V>
      * exists, returns the entry for the greatest key less than the specified
      * key; if no such entry exists, returns {@code null}.
      */
+     //获取不大于key的最大的节点
     final Entry<K,V> getFloorEntry(K key) {
         Entry<K,V> p = root;
         while (p != null) {
@@ -455,6 +473,7 @@ public class TreeMap<K,V>
      * key greater than the specified key; if no such entry exists
      * returns {@code null}.
      */
+     //获取大于key的最小节点
     final Entry<K,V> getHigherEntry(K key) {
         Entry<K,V> p = root;
         while (p != null) {
@@ -486,6 +505,7 @@ public class TreeMap<K,V>
      * no such entry exists (i.e., the least key in the Tree is greater than
      * the specified key), returns {@code null}.
      */
+     //获取小于key的最大节点
     final Entry<K,V> getLowerEntry(K key) {
         Entry<K,V> p = root;
         while (p != null) {
@@ -530,6 +550,7 @@ public class TreeMap<K,V>
      *         and this map uses natural ordering, or its comparator
      *         does not permit null keys
      */
+     //把key,value插入到treemap,红黑树算法实现
     public V put(K key, V value) {
         Entry<K,V> t = root;
         if (t == null) {
@@ -597,6 +618,7 @@ public class TreeMap<K,V>
      *         and this map uses natural ordering, or its comparator
      *         does not permit null keys
      */
+     //删除键是key的节点，返回节点值
     public V remove(Object key) {
         Entry<K,V> p = getEntry(key);
         if (p == null)
@@ -611,6 +633,7 @@ public class TreeMap<K,V>
      * Removes all of the mappings from this map.
      * The map will be empty after this call returns.
      */
+     //清空红黑树
     public void clear() {
         modCount++;
         size = 0;
@@ -623,6 +646,7 @@ public class TreeMap<K,V>
      *
      * @return a shallow copy of this map
      */
+     //克隆
     public Object clone() {
         TreeMap<?,?> clone;
         try {
@@ -653,6 +677,7 @@ public class TreeMap<K,V>
     /**
      * @since 1.6
      */
+     //获取第一个节点，对外接口
     public Map.Entry<K,V> firstEntry() {
         return exportEntry(getFirstEntry());
     }
@@ -660,6 +685,7 @@ public class TreeMap<K,V>
     /**
      * @since 1.6
      */
+     //获取最后一个节点，对外接口
     public Map.Entry<K,V> lastEntry() {
         return exportEntry(getLastEntry());
     }
@@ -667,6 +693,7 @@ public class TreeMap<K,V>
     /**
      * @since 1.6
      */
+     //获取第一个节点后，将该节点删除
     public Map.Entry<K,V> pollFirstEntry() {
         Entry<K,V> p = getFirstEntry();
         Map.Entry<K,V> result = exportEntry(p);
@@ -678,6 +705,7 @@ public class TreeMap<K,V>
     /**
      * @since 1.6
      */
+     //获取最后一个节点，将该节点删除
     public Map.Entry<K,V> pollLastEntry() {
         Entry<K,V> p = getLastEntry();
         Map.Entry<K,V> result = exportEntry(p);
@@ -693,6 +721,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     //返回小于key的最大的键值对
     public Map.Entry<K,V> lowerEntry(K key) {
         return exportEntry(getLowerEntry(key));
     }
@@ -704,6 +733,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     //返回小于key的最大的键值对的key
     public K lowerKey(K key) {
         return keyOrNull(getLowerEntry(key));
     }
@@ -715,6 +745,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     //返回不大于key的最大的键值对
     public Map.Entry<K,V> floorEntry(K key) {
         return exportEntry(getFloorEntry(key));
     }
@@ -726,6 +757,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     //返回不大于key的键值对的key
     public K floorKey(K key) {
         return keyOrNull(getFloorEntry(key));
     }
@@ -737,6 +769,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     //返回不小于key的最小的键值对
     public Map.Entry<K,V> ceilingEntry(K key) {
         return exportEntry(getCeilingEntry(key));
     }
@@ -748,6 +781,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     //返回不小于key的最小的键值对对应的可以
     public K ceilingKey(K key) {
         return keyOrNull(getCeilingEntry(key));
     }
@@ -759,6 +793,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     // 返回大于key的最小的键值对
     public Map.Entry<K,V> higherEntry(K key) {
         return exportEntry(getHigherEntry(key));
     }
@@ -770,6 +805,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @since 1.6
      */
+     // 返回大于key的最小的键值对
     public K higherKey(K key) {
         return keyOrNull(getHigherEntry(key));
     }
@@ -781,8 +817,11 @@ public class TreeMap<K,V>
      * the first time this view is requested.  Views are stateless, so
      * there's no reason to create more than one.
      */
+     // TreeMap的红黑树节点对应的集合
     private transient EntrySet entrySet;
+    // KeySet为KeySet导航类
     private transient KeySet<K> navigableKeySet;
+    // descendingMap为键值对的倒序“映射”
     private transient NavigableMap<K,V> descendingMap;
 
     /**
@@ -810,6 +849,7 @@ public class TreeMap<K,V>
      * operations.  It does not support the {@code add} or {@code addAll}
      * operations.
      */
+      // 返回TreeMap的“键的集合”
     public Set<K> keySet() {
         return navigableKeySet();
     }
@@ -817,6 +857,7 @@ public class TreeMap<K,V>
     /**
      * @since 1.6
      */
+     // 获取“可导航”的Key的集合，实际上是返回KeySet类的对象
     public NavigableSet<K> navigableKeySet() {
         KeySet<K> nks = navigableKeySet;
         return (nks != null) ? nks : (navigableKeySet = new KeySet<>(this));
@@ -825,6 +866,7 @@ public class TreeMap<K,V>
     /**
      * @since 1.6
      */
+     //返回倒序映射的KeySet类的对象
     public NavigableSet<K> descendingKeySet() {
         return descendingMap().navigableKeySet();
     }
@@ -850,6 +892,7 @@ public class TreeMap<K,V>
      * {@code retainAll} and {@code clear} operations.  It does not
      * support the {@code add} or {@code addAll} operations.
      */
+     //返回“TreeMap的值对应的集合”
     public Collection<V> values() {
         Collection<V> vs = values;
         if (vs == null) {
@@ -881,6 +924,7 @@ public class TreeMap<K,V>
      * {@code clear} operations.  It does not support the
      * {@code add} or {@code addAll} operations.
      */
+     // 获取TreeMap的Entry的集合，实际上是返回EntrySet类的对象。
     public Set<Map.Entry<K,V>> entrySet() {
         EntrySet es = entrySet;
         return (es != null) ? es : (entrySet = new EntrySet());
@@ -889,6 +933,7 @@ public class TreeMap<K,V>
     /**
      * @since 1.6
      */
+    // 获取TreeMap的降序Map
     public NavigableMap<K, V> descendingMap() {
         NavigableMap<K, V> km = descendingMap;
         return (km != null) ? km :
@@ -905,6 +950,8 @@ public class TreeMap<K,V>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+     // 获取TreeMap的子Map
+     // 范围是从fromKey 到 toKey；fromInclusive是是否包含fromKey的标记，toInclusive是是否包含toKey的标记
     public NavigableMap<K,V> subMap(K fromKey, boolean fromInclusive,
                                     K toKey,   boolean toInclusive) {
         return new AscendingSubMap<>(this,
@@ -920,6 +967,8 @@ public class TreeMap<K,V>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+     // 获取“Map的头部”
+      // 范围从第一个节点 到 toKey, inclusive是是否包含toKey的标记
     public NavigableMap<K,V> headMap(K toKey, boolean inclusive) {
         return new AscendingSubMap<>(this,
                                      true,  null,  true,
@@ -934,6 +983,8 @@ public class TreeMap<K,V>
      * @throws IllegalArgumentException {@inheritDoc}
      * @since 1.6
      */
+     // 获取“Map的尾部”。
+    // 范围是从 fromKey 到 最后一个节点，inclusive是是否包含fromKey的标记
     public NavigableMap<K,V> tailMap(K fromKey, boolean inclusive) {
         return new AscendingSubMap<>(this,
                                      false, fromKey, inclusive,
@@ -947,6 +998,7 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @throws IllegalArgumentException {@inheritDoc}
      */
+     //获取“子Map” 范围从第一个节点 到 toKey(不包括)
     public SortedMap<K,V> subMap(K fromKey, K toKey) {
         return subMap(fromKey, true, toKey, false);
     }
@@ -958,6 +1010,8 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @throws IllegalArgumentException {@inheritDoc}
      */
+     //  获取“Map的头部”。
+     //范围从第一个节点 到 toKey(不包括)
     public SortedMap<K,V> headMap(K toKey) {
         return headMap(toKey, false);
     }
@@ -969,6 +1023,8 @@ public class TreeMap<K,V>
      *         does not permit null keys
      * @throws IllegalArgumentException {@inheritDoc}
      */
+     // 获取“Map的尾部”。
+     // 范围是从 fromKey(包括) 到 最后一个节点
     public SortedMap<K,V> tailMap(K fromKey) {
         return tailMap(fromKey, true);
     }
@@ -1022,7 +1078,7 @@ public class TreeMap<K,V>
     }
 
     // View class support
-
+    // ”TreeMap的值的集合“对应的类，它集成于AbstractCollection
     class Values extends AbstractCollection<V> {
         public Iterator<V> iterator() {
             return new ValueIterator(getFirstEntry());
@@ -1054,7 +1110,7 @@ public class TreeMap<K,V>
             return new ValueSpliterator<>(TreeMap.this, null, null, 0, -1, 0);
         }
     }
-
+    // EntrySet是“TreeMap的所有键值对组成的集合”，
     class EntrySet extends AbstractSet<Map.Entry<K,V>> {
         public Iterator<Map.Entry<K,V>> iterator() {
             return new EntryIterator(getFirstEntry());
@@ -1102,15 +1158,16 @@ public class TreeMap<K,V>
      * Iterator methods that are defined appropriately in main versus
      * submap classes.
      */
-
+    // 返回“TreeMap的KEY组成的迭代器(顺序)”
     Iterator<K> keyIterator() {
         return new KeyIterator(getFirstEntry());
     }
-
+    // 返回“TreeMap的KEY组成的迭代器(逆序)”
     Iterator<K> descendingKeyIterator() {
         return new DescendingKeyIterator(getLastEntry());
     }
-
+    // KeySet是“TreeMap中所有的KEY组成的集合”
+     // KeySet继承于AbstractSet，而且实现了NavigableSet接口。
     static final class KeySet<E> extends AbstractSet<E> implements NavigableSet<E> {
         private final NavigableMap<E, ?> m;
         KeySet(NavigableMap<E,?> map) { m = map; }
@@ -1185,6 +1242,7 @@ public class TreeMap<K,V>
     /**
      * Base class for TreeMap Iterators
      */
+      // 它是TreeMap中的一个抽象迭代器，实现了一些通用的接口。
     abstract class PrivateEntryIterator<T> implements Iterator<T> {
         Entry<K,V> next;
         Entry<K,V> lastReturned;
@@ -1235,7 +1293,7 @@ public class TreeMap<K,V>
             lastReturned = null;
         }
     }
-
+    // TreeMap的Entry对应的迭代器
     final class EntryIterator extends PrivateEntryIterator<Map.Entry<K,V>> {
         EntryIterator(Entry<K,V> first) {
             super(first);
@@ -1244,7 +1302,7 @@ public class TreeMap<K,V>
             return nextEntry();
         }
     }
-
+    // TreeMap的Value对应的迭代器
     final class ValueIterator extends PrivateEntryIterator<V> {
         ValueIterator(Entry<K,V> first) {
             super(first);
@@ -1253,7 +1311,7 @@ public class TreeMap<K,V>
             return nextEntry().value;
         }
     }
-
+     // reeMap的KEY组成的迭代器(顺序)
     final class KeyIterator extends PrivateEntryIterator<K> {
         KeyIterator(Entry<K,V> first) {
             super(first);
@@ -1262,7 +1320,7 @@ public class TreeMap<K,V>
             return nextEntry().key;
         }
     }
-
+    // TreeMap的KEY组成的迭代器(逆序)
     final class DescendingKeyIterator extends PrivateEntryIterator<K> {
         DescendingKeyIterator(Entry<K,V> first) {
             super(first);
@@ -1286,6 +1344,7 @@ public class TreeMap<K,V>
     /**
      * Compares two keys using the correct comparison method for this TreeMap.
      */
+     // 比较两个对象的大小
     @SuppressWarnings("unchecked")
     final int compare(Object k1, Object k2) {
         return comparator==null ? ((Comparable<? super K>)k1).compareTo((K)k2)
@@ -1296,6 +1355,7 @@ public class TreeMap<K,V>
      * Test two values for equality.  Differs from o1.equals(o2) only in
      * that it copes with {@code null} o1 properly.
      */
+     // 判断两个对象是否相等
     static final boolean valEquals(Object o1, Object o2) {
         return (o1==null ? o2==null : o1.equals(o2));
     }
@@ -1303,6 +1363,7 @@ public class TreeMap<K,V>
     /**
      * Return SimpleImmutableEntry for entry, or null if null
      */
+     // 返回“Key-Value键值对”的一个简单拷贝(AbstractMap.SimpleImmutableEntry<K,V>对象)
     static <K,V> Map.Entry<K,V> exportEntry(TreeMap.Entry<K,V> e) {
         return (e == null) ? null :
             new AbstractMap.SimpleImmutableEntry<>(e);
@@ -1311,6 +1372,7 @@ public class TreeMap<K,V>
     /**
      * Return key for entry, or null if null
      */
+     // 若“键值对”不为null，则返回KEY；否则，返回null
     static <K,V> K keyOrNull(TreeMap.Entry<K,V> e) {
         return (e == null) ? null : e.key;
     }
@@ -1319,6 +1381,7 @@ public class TreeMap<K,V>
      * Returns the key corresponding to the specified Entry.
      * @throws NoSuchElementException if the Entry is null
      */
+     // 若“键值对”不为null，则返回KEY；否则，抛出异常 
     static <K> K key(Entry<K,?> e) {
         if (e==null)
             throw new NoSuchElementException();
@@ -1337,6 +1400,7 @@ public class TreeMap<K,V>
     /**
      * @serial include
      */
+     // TreeMap的SubMap，它一个抽象类，实现了公共操作
     abstract static class NavigableSubMap<K,V> extends AbstractMap<K,V>
         implements NavigableMap<K,V>, java.io.Serializable {
         private static final long serialVersionUID = -2102997345730753016L;
@@ -2017,6 +2081,7 @@ public class TreeMap<K,V>
      *
      * @serial include
      */
+     // SubMap是旧版本的类
     private class SubMap extends AbstractMap<K,V>
         implements SortedMap<K,V>, java.io.Serializable {
         private static final long serialVersionUID = -6520786458950516097L;
@@ -2038,15 +2103,16 @@ public class TreeMap<K,V>
 
 
     // Red-black mechanics
-
+ // 红黑树的节点颜色--红色
     private static final boolean RED   = false;
+    // 红黑树的节点颜色--黑色
     private static final boolean BLACK = true;
 
     /**
      * Node in the Tree.  Doubles as a means to pass key-value pairs back to
      * user (see Map.Entry).
      */
-
+ // “红黑树的节点”对应的类。
     static final class Entry<K,V> implements Map.Entry<K,V> {
         K key;
         V value;
@@ -2119,6 +2185,7 @@ public class TreeMap<K,V>
      * Returns the first Entry in the TreeMap (according to the TreeMap's
      * key-sort function).  Returns null if the TreeMap is empty.
      */
+     // 返回“红黑树的第一个节点”
     final Entry<K,V> getFirstEntry() {
         Entry<K,V> p = root;
         if (p != null)
@@ -2131,6 +2198,7 @@ public class TreeMap<K,V>
      * Returns the last Entry in the TreeMap (according to the TreeMap's
      * key-sort function).  Returns null if the TreeMap is empty.
      */
+     // 返回“红黑树的最后一个节点”
     final Entry<K,V> getLastEntry() {
         Entry<K,V> p = root;
         if (p != null)
@@ -2142,6 +2210,7 @@ public class TreeMap<K,V>
     /**
      * Returns the successor of the specified Entry, or null if no such.
      */
+     // 返回“节点t的后继节点”
     static <K,V> TreeMap.Entry<K,V> successor(Entry<K,V> t) {
         if (t == null)
             return null;
@@ -2164,6 +2233,7 @@ public class TreeMap<K,V>
     /**
      * Returns the predecessor of the specified Entry, or null if no such.
      */
+     // 返回“节点t的前继节点”
     static <K,V> Entry<K,V> predecessor(Entry<K,V> t) {
         if (t == null)
             return null;
@@ -2192,29 +2262,31 @@ public class TreeMap<K,V>
      * are used to avoid messiness surrounding nullness checks in the main
      * algorithms.
      */
-
+     // 返回“节点p的颜色”
+     // 根据“红黑树的特性”可知：空节点颜色是黑色。
     private static <K,V> boolean colorOf(Entry<K,V> p) {
         return (p == null ? BLACK : p.color);
     }
-
+    // 返回“节点p的父节点”
     private static <K,V> Entry<K,V> parentOf(Entry<K,V> p) {
         return (p == null ? null: p.parent);
     }
-
+    // 设置“节点p的颜色为c”
     private static <K,V> void setColor(Entry<K,V> p, boolean c) {
         if (p != null)
             p.color = c;
     }
-
+    // 设置“节点p的左孩子”
     private static <K,V> Entry<K,V> leftOf(Entry<K,V> p) {
         return (p == null) ? null: p.left;
     }
-
+    // 设置“节点p的右孩子”
     private static <K,V> Entry<K,V> rightOf(Entry<K,V> p) {
         return (p == null) ? null: p.right;
     }
 
     /** From CLR */
+    // 对节点p执行“左旋”操作
     private void rotateLeft(Entry<K,V> p) {
         if (p != null) {
             Entry<K,V> r = p.right;
@@ -2234,6 +2306,7 @@ public class TreeMap<K,V>
     }
 
     /** From CLR */
+    // 对节点p执行“右旋”操作
     private void rotateRight(Entry<K,V> p) {
         if (p != null) {
             Entry<K,V> l = p.left;
@@ -2251,6 +2324,8 @@ public class TreeMap<K,V>
     }
 
     /** From CLR */
+    // 插入之后的修正操作。
+    // 目的是保证：红黑树插入节点之后，仍然是一颗红黑树
     private void fixAfterInsertion(Entry<K,V> x) {
         x.color = RED;
 
@@ -2295,6 +2370,7 @@ public class TreeMap<K,V>
     /**
      * Delete node p, and then rebalance the tree.
      */
+     // 删除“红黑树的节点p”
     private void deleteEntry(Entry<K,V> p) {
         modCount++;
         size--;
@@ -2344,6 +2420,8 @@ public class TreeMap<K,V>
     }
 
     /** From CLR */
+    // 删除之后的修正操作
+    // 目的是保证：红黑树删除节点之后，仍然是一颗红黑树
     private void fixAfterDeletion(Entry<K,V> x) {
         while (x != root && colorOf(x) == BLACK) {
             if (x == leftOf(parentOf(x))) {
@@ -2420,6 +2498,7 @@ public class TreeMap<K,V>
      *             or by the keys' natural ordering if the TreeMap has no
      *             Comparator).
      */
+     // java.io.Serializable的写入函数
     private void writeObject(java.io.ObjectOutputStream s)
         throws java.io.IOException {
         // Write out the Comparator and any hidden stuff
@@ -2495,6 +2574,7 @@ public class TreeMap<K,V>
      * @throws ClassNotFoundException propagated from readObject.
      *         This cannot occur if str is null.
      */
+     // 根据已经一个排好序的map创建一个TreeMap
     private void buildFromSorted(int size, Iterator<?> it,
                                  java.io.ObjectInputStream str,
                                  V defaultVal)
@@ -2518,6 +2598,7 @@ public class TreeMap<K,V>
      * @param redLevel the level at which nodes should be red.
      *        Must be equal to computeRedLevel for tree of this size.
      */
+     // 根据已经一个排好序的map创建一个TreeMap
     @SuppressWarnings("unchecked")
     private final Entry<K,V> buildFromSorted(int level, int lo, int hi,
                                              int redLevel,
@@ -2594,6 +2675,7 @@ public class TreeMap<K,V>
      *
      * @param size the (non-negative) number of keys in the tree to be built
      */
+      // 计算节点树为sz的最大深度，也是红色节点的深度值。
     private static int computeRedLevel(int size) {
         return 31 - Integer.numberOfLeadingZeros(size + 1);
     }
