@@ -160,6 +160,7 @@ import java.io.IOException;
  * @see     Hashtable
  * @since   1.4
  */
+//LinkedHashMap 继承HashMap,和HashMap区别就是多了一个双向的链表，可以记录元素的插入顺序和访问顺序
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
     implements Map<K,V>
