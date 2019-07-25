@@ -580,6 +580,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param key the key
      * @return the node, or null if none
      */
+     //实现get()和相关方法
     final Node<K,V> getNode(int hash, Object key) {
         Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
         if ((tab = table) != null && (n = tab.length) > 0 &&
@@ -608,6 +609,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @return {@code true} if this map contains a mapping for the specified
      * key.
      */
+     //是否包含指定的Key
     public boolean containsKey(Object key) {
         return getNode(hash(key), key) != null;
     }
@@ -624,6 +626,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *         (A {@code null} return can also indicate that the map
      *         previously associated {@code null} with {@code key}.)
      */
+     //添加元素
     public V put(K key, V value) {
         return putVal(hash(key), key, value, false, true);
     }
@@ -638,6 +641,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param evict if false, the table is in creation mode.
      * @return previous value, or null if none
      */
+     //添加元素实现
     final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                    boolean evict) {
         Node<K,V>[] tab; Node<K,V> p; int n, i;
@@ -690,6 +694,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @return the table
      */
+     //初始化或者容量翻倍
     final Node<K,V>[] resize() {
         Node<K,V>[] oldTab = table;
         int oldCap = (oldTab == null) ? 0 : oldTab.length;
@@ -768,6 +773,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * Replaces all linked nodes in bin at index for given hash unless
      * table is too small, in which case resizes instead.
      */
+     //替换索引处所有链表
     final void treeifyBin(Node<K,V>[] tab, int hash) {
         int n, index; Node<K,V> e;
         if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
@@ -797,6 +803,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param m mappings to be stored in this map
      * @throws NullPointerException if the specified map is null
      */
+     //复制指定map中元素到现在的map中
     public void putAll(Map<? extends K, ? extends V> m) {
         putMapEntries(m, true);
     }
@@ -810,6 +817,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *         (A {@code null} return can also indicate that the map
      *         previously associated {@code null} with {@code key}.)
      */
+     //删除指定元素
     public V remove(Object key) {
         Node<K,V> e;
         return (e = removeNode(hash(key), key, null, false, true)) == null ?
@@ -826,6 +834,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @param movable if false do not move other nodes while removing
      * @return the node, or null if none
      */
+     //实现remove相关方法
     final Node<K,V> removeNode(int hash, Object key, Object value,
                                boolean matchValue, boolean movable) {
         Node<K,V>[] tab; Node<K,V> p; int n, index;
@@ -871,6 +880,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * Removes all of the mappings from this map.
      * The map will be empty after this call returns.
      */
+     //清空map
     public void clear() {
         Node<K,V>[] tab;
         modCount++;
@@ -889,6 +899,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * @return {@code true} if this map maps one or more keys to the
      *         specified value
      */
+     //查询是否包含指定的value值
     public boolean containsValue(Object value) {
         Node<K,V>[] tab; V v;
         if ((tab = table) != null && size > 0) {
@@ -918,6 +929,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @return a set view of the keys contained in this map
      */
+     //返回map中所有key的set集合
     public Set<K> keySet() {
         Set<K> ks = keySet;
         if (ks == null) {
@@ -969,6 +981,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @return a view of the values contained in this map
      */
+     //返回一个value的集合
     public Collection<V> values() {
         Collection<V> vs = values;
         if (vs == null) {
@@ -1018,6 +1031,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      *
      * @return a set view of the mappings contained in this map
      */
+     //返回一个Entry的集合
     public Set<Map.Entry<K,V>> entrySet() {
         Set<Map.Entry<K,V>> es;
         return (es = entrySet) == null ? (entrySet = new EntrySet()) : es;
@@ -1066,7 +1080,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     }
 
     // Overrides of JDK8 Map extension methods
-
+    //JDK8 Map扩展方法的覆盖
     @Override
     public V getOrDefault(Object key, V defaultValue) {
         Node<K,V> e;
