@@ -100,6 +100,10 @@ public class Collections {
      * (The first word of each tuning parameter name is the algorithm to which
      * it applies.)
      */
+    //上面这些属性是Collections的调优参数。通常Collections的许多算法都有两个实现，一个适用于随机访问，另一个适合顺序访问。
+    //通常随机访问在列表数据量小的适合可以获得很好的性能，这里的每个值代表了该操作使用随机访问的数据的阈值。
+    //而这些值的确定是根据以往的经验确定的，对LinkedList是很有效的。这里每个调优参数名的第一个词是它所应用的算法
+
     private static final int BINARYSEARCH_THRESHOLD   = 5000;
     private static final int REVERSE_THRESHOLD        =   18;
     private static final int SHUFFLE_THRESHOLD        =    5;
@@ -138,6 +142,7 @@ public class Collections {
      *         found to violate the {@link Comparable} contract
      * @see List#sort(Comparator)
      */
+    //排序 List中的对象必须要实现了Comparable接口
     @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> void sort(List<T> list) {
         list.sort(null);
@@ -172,6 +177,7 @@ public class Collections {
      *         found to violate the {@link Comparator} contract
      * @see List#sort(Comparator)
      */
+    //要求实现Comparable接口，但可以自定义比较器
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> void sort(List<T> list, Comparator<? super T> c) {
         list.sort(c);
@@ -209,6 +215,9 @@ public class Collections {
      *         integers), or the search key is not mutually comparable
      *         with the elements of the list.
      */
+    //二分查找算法查找对象
+    //这个集合必须已经排好序；
+    //这个集合必须可以比较；
     public static <T>
     int binarySearch(List<? extends Comparable<? super T>> list, T key) {
         if (list instanceof RandomAccess || list.size()<BINARYSEARCH_THRESHOLD)
@@ -223,13 +232,18 @@ public class Collections {
         int high = list.size()-1;
 
         while (low <= high) {
+            // 使用位运算，计算中间索引值
             int mid = (low + high) >>> 1;
+            // 计算中间的元素值
             Comparable<? super T> midVal = list.get(mid);
+            // 进行比较
             int cmp = midVal.compareTo(key);
 
             if (cmp < 0)
+                // 比传入的key小，在list的高位部分查找
                 low = mid + 1;
             else if (cmp > 0)
+                // 比传入的key大，在list的低位部分查询
                 high = mid - 1;
             else
                 return mid; // key found
@@ -242,10 +256,12 @@ public class Collections {
     {
         int low = 0;
         int high = list.size()-1;
+        // 通过ListIterator迭代器来进行查找
         ListIterator<? extends Comparable<? super T>> i = list.listIterator();
 
         while (low <= high) {
             int mid = (low + high) >>> 1;
+            // 通过Collections.get方法获取中间索引处的元素值
             Comparable<? super T> midVal = get(i, mid);
             int cmp = midVal.compareTo(key);
 
@@ -265,7 +281,10 @@ public class Collections {
      */
     private static <T> T get(ListIterator<? extends T> i, int index) {
         T obj = null;
+        // 获取下一个索引值
         int pos = i.nextIndex();
+        // 循环判断获取的索引是否小于中间索引index
+        // 如果小于，从前往后遍历，否则，从后往前遍历，最后返回元素值
         if (pos <= index) {
             do {
                 obj = i.next();
@@ -372,6 +391,8 @@ public class Collections {
      * @throws UnsupportedOperationException if the specified list or
      *         its list-iterator does not support the {@code set} operation.
      */
+    //列表反转方法，如果列表支持随机访问或者列表大小小于要反转的阈值18，则直接采用交换操作；
+    //否则采用双迭代操作，一个从头遍历，一个从尾遍历，然后交换
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void reverse(List<?> list) {
         int size = list.size();
@@ -382,10 +403,14 @@ public class Collections {
             // instead of using a raw type here, it's possible to capture
             // the wildcard but it will require a call to a supplementary
             // private method
+            // 迭代器遍历从头开始（forward）
             ListIterator fwd = list.listIterator();
+             // 迭代器遍历从尾部开始（reverse）
             ListIterator rev = list.listIterator(size);
             for (int i=0, mid=list.size()>>1; i<mid; i++) {
+                // 从头开始
                 Object tmp = fwd.next();
+                // 设置fwd下一个元素为rev前一个元素，交换
                 fwd.set(rev.previous());
                 rev.set(tmp);
             }
@@ -420,6 +445,7 @@ public class Collections {
      * @throws UnsupportedOperationException if the specified list or
      *         its list-iterator does not support the {@code set} operation.
      */
+    //重新洗牌，重新排序
     public static void shuffle(List<?> list) {
         Random rnd = r;
         if (rnd == null)
@@ -452,6 +478,7 @@ public class Collections {
      * @throws UnsupportedOperationException if the specified list or its
      *         list-iterator does not support the {@code set} operation.
      */
+    //可以传入指定种子数的Random。也就是说一旦指定了种子数，那么每次将会产生相同的随机数，也就相当于这种随机生成的元素就是一种伪随机
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void shuffle(List<?> list, Random rnd) {
         int size = list.size();
@@ -490,6 +517,7 @@ public class Collections {
      *         || j &lt; 0 || j &gt;= list.size()).
      * @since 1.4
      */
+    // 这里在设置j处为新的值的同时，会返回索引j处原来的值，然后再次set，很巧妙的实现了交换操作
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void swap(List<?> list, int i, int j) {
         // instead of using a raw type here, it's possible to capture
@@ -520,6 +548,9 @@ public class Collections {
      * @throws UnsupportedOperationException if the specified list or its
      *         list-iterator does not support the {@code set} operation.
      */
+    //将List的原有数据全部填充为一个固定的元素。
+    //同样也分两种情况，如果列表支持随机访问或者大小小于要填充的阈值，就直接遍历List进行set操作即可；
+    //否则，使用iterator迭代器模式进行设值
     public static <T> void fill(List<? super T> list, T obj) {
         int size = list.size();
 
@@ -553,6 +584,7 @@ public class Collections {
      * @throws UnsupportedOperationException if the destination list's
      *         list-iterator does not support the {@code set} operation.
      */
+    //将原集合中元素拷贝到另一个集合中
     public static <T> void copy(List<? super T> dest, List<? extends T> src) {
         int srcSize = src.size();
         if (srcSize > dest.size())
@@ -594,6 +626,8 @@ public class Collections {
      * @throws NoSuchElementException if the collection is empty.
      * @see Comparable
      */
+    //min方法返回指定集合的最小元素，根据自然顺序进行比较
+    //需要注意的一点就是集合中的元素必须是可比较的（实现Comparable）
     public static <T extends Object & Comparable<? super T>> T min(Collection<? extends T> coll) {
         Iterator<? extends T> i = coll.iterator();
         T candidate = i.next();
@@ -629,6 +663,7 @@ public class Collections {
      * @throws NoSuchElementException if the collection is empty.
      * @see Comparable
      */
+    //带比较器重载min
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T min(Collection<? extends T> coll, Comparator<? super T> comp) {
         if (comp==null)
@@ -667,6 +702,7 @@ public class Collections {
      * @throws NoSuchElementException if the collection is empty.
      * @see Comparable
      */
+    //返回结合中最大元素
     public static <T extends Object & Comparable<? super T>> T max(Collection<? extends T> coll) {
         Iterator<? extends T> i = coll.iterator();
         T candidate = i.next();
@@ -702,6 +738,7 @@ public class Collections {
      * @throws NoSuchElementException if the collection is empty.
      * @see Comparable
      */
+    //带比较器，重载max
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T max(Collection<? extends T> coll, Comparator<? super T> comp) {
         if (comp==null)
@@ -773,6 +810,7 @@ public class Collections {
      *         its list-iterator does not support the {@code set} operation.
      * @since 1.4
      */
+    //元素整体右移，
     public static void rotate(List<?> list, int distance) {
         if (list instanceof RandomAccess || list.size() < ROTATE_THRESHOLD)
             rotate1(list, distance);
@@ -784,12 +822,14 @@ public class Collections {
         int size = list.size();
         if (size == 0)
             return;
+        // 距离取余，计算实际要移动距离
         distance = distance % size;
+        // 考虑有可能是负数
         if (distance < 0)
             distance += size;
         if (distance == 0)
             return;
-
+        //循环移动
         for (int cycleStart = 0, nMoved = 0; nMoved != size; cycleStart++) {
             T displaced = list.get(cycleStart);
             int i = cycleStart;
@@ -802,7 +842,7 @@ public class Collections {
             } while (i != cycleStart);
         }
     }
-
+    //反转方法reverse方法来进行操作的
     private static void rotate2(List<?> list, int distance) {
         int size = list.size();
         if (size == 0)
@@ -837,6 +877,9 @@ public class Collections {
      *         its list-iterator does not support the {@code set} operation.
      * @since  1.4
      */
+    //替换集合中的某一个元素为新的元素，可以替换null元素。
+    //该方法同样分为两种操作，如果集合支持随机访问或者集合大小小于要替换的阈值大小，使用对象的equals方法加list的set方法进行操作；
+    //否则，使用迭代器进行迭代操作。
     public static <T> boolean replaceAll(List<T> list, T oldVal, T newVal) {
         boolean result = false;
         int size = list.size();
@@ -897,23 +940,29 @@ public class Collections {
      *         is no such occurrence.
      * @since  1.4
      */
+    //查找集合包含子集合的下标索引，如果查找不到则返回-1。
+    //indexOfSubList是查找第一次出现的索引，而lastIndexOfSubList则是查找最后一次出现的索引。
+    //这两个方法的性能都不是太好，都是一种属于暴力搜索的算法，并且这里用到了Java中循环标签的概念。
     public static int indexOfSubList(List<?> source, List<?> target) {
         int sourceSize = source.size();
         int targetSize = target.size();
         int maxCandidate = sourceSize - targetSize;
-
+        // 如果原集合和目标集合都支持随机访问，或者原集合小于阈值
         if (sourceSize < INDEXOFSUBLIST_THRESHOLD ||
             (source instanceof RandomAccess&&target instanceof RandomAccess)) {
         nextCand:
+            // 双层遍历
             for (int candidate = 0; candidate <= maxCandidate; candidate++) {
                 for (int i=0, j=candidate; i<targetSize; i++, j++)
                     if (!eq(target.get(i), source.get(j)))
                         continue nextCand;  // Element mismatch, try next cand
+                // 全部匹配，返回索引
                 return candidate;  // All elements of candidate matched target
             }
         } else {  // Iterator version of above algorithm
             ListIterator<?> si = source.listIterator();
         nextCand:
+             // 使用迭代器来进行循环
             for (int candidate = 0; candidate <= maxCandidate; candidate++) {
                 ListIterator<?> ti = target.listIterator();
                 for (int i=0; i<targetSize; i++) {
@@ -927,6 +976,7 @@ public class Collections {
                 return candidate;
             }
         }
+        // 查询不到，返回-1
         return -1;  // No candidate matched the target
     }
 
@@ -1011,6 +1061,8 @@ public class Collections {
      *         returned.
      * @return an unmodifiable view of the specified collection.
      */
+    //Collections提供了一系列以unmodifiable开头的方法，用来在原集合基础上生成一个不可变的集合。
+    //比如unmodifiableSet，unmodifiableSortedMap等等。
     public static <T> Collection<T> unmodifiableCollection(Collection<? extends T> c) {
         return new UnmodifiableCollection<>(c);
     }
@@ -1950,6 +2002,7 @@ public class Collections {
     }
 
     // Synch Wrappers
+    //synchronized方法
 
     /**
      * Returns a synchronized (thread-safe) collection backed by the specified
@@ -1984,6 +2037,8 @@ public class Collections {
      * @param  c the collection to be "wrapped" in a synchronized collection.
      * @return a synchronized view of the specified collection.
      */
+    //Collections也提供了一系列以synchronized开头的方法，用来将原集合转成一个线程安全的集合。
+    //比如synchronizedList，synchronizedMap等。我们来大致看下synchronizedList的实现
     public static <T> Collection<T> synchronizedCollection(Collection<T> c) {
         return new SynchronizedCollection<>(c);
     }
@@ -2960,7 +3015,7 @@ public class Collections {
     }
 
     // Dynamically typesafe collection wrappers
-
+    //checked方法
     /**
      * Returns a dynamically typesafe view of the specified collection.
      * Any attempt to insert an element of the wrong type will result in an
@@ -3022,6 +3077,9 @@ public class Collections {
      * @return a dynamically typesafe view of the specified collection
      * @since 1.5
      */
+    //Collections提供了一系列以checked开头的方法，用于获取动态类型安全的集合，常用于泛型相关操作。
+    //比如说当我们想往集合中插入一组数据的时候，除了可以明确指定数据的类型（List<Integer>），
+    //也可以使用Collections的checked方法来检查类型安全
     public static <E> Collection<E> checkedCollection(Collection<E> c,
                                                       Class<E> type) {
         return new CheckedCollection<>(c, type);
@@ -4175,7 +4233,8 @@ public class Collections {
     }
 
     // Empty collections
-
+    //empty方法
+    //Collections也提供了一系列以empty开头的方法，用户获取空的集合。比如emptySet，emptyList，emptyMap等方法。
     /**
      * Returns an iterator that has no elements.  More precisely,
      *
@@ -5183,6 +5242,7 @@ public class Collections {
      *         specified comparator.
      * @since 1.5
      */
+    //返回对象集合排序的自然排序的逆序
     @SuppressWarnings("unchecked")
     public static <T> Comparator<T> reverseOrder(Comparator<T> cmp) {
         if (cmp == null) {
@@ -5255,6 +5315,7 @@ public class Collections {
      * @return an enumeration over the specified collection.
      * @see Enumeration
      */
+    //返回我们所传入的比较器的逆序排序比较器
     public static <T> Enumeration<T> enumeration(final Collection<T> c) {
         return new Enumeration<T>() {
             private final Iterator<T> i = c.iterator();
@@ -5314,6 +5375,7 @@ public class Collections {
      * @throws NullPointerException if {@code c} is null
      * @since 1.5
      */
+    //该方法用于获取某一个元素在集合中出现的次数，并且可以统计null，底层通过遍历比较来实现。
     public static int frequency(Collection<?> c, Object o) {
         int result = 0;
         if (o == null) {
@@ -5366,6 +5428,9 @@ public class Collections {
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      * @since 1.5
      */
+    //disjoint方法用于判断两个指定的集合是否互斥，即是否没有共同的元素，
+    //如果没有共同的元素，说明互斥返回true，
+    //如果有共同的元素说明不互斥，返回false
     public static boolean disjoint(Collection<?> c1, Collection<?> c2) {
         // The collection to be used for contains(). Preference is given to
         // the collection who's contains() has lower O() complexity.
@@ -5446,6 +5511,7 @@ public class Collections {
      * @since 1.5
      */
     @SafeVarargs
+    //用于向集合中添加多个元素，其中elements是一个可变参数，可以传递多个值
     public static <T> boolean addAll(Collection<? super T> c, T... elements) {
         boolean result = false;
         for (T element : elements)
